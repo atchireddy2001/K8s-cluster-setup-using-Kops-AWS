@@ -1,0 +1,47 @@
+K8s cluster in AWS with Kops
+----------------------------
+
+First create a AWS instance (this is just for Launching our cluster so freetier is more than enough)
+
+Create a s3 bucket (this is used as DB for cluster config details such as network, insatance types and .. )
+--> if we have aws cli preinstalled then we can do it via cli else create a s3 bucker from AWS GUI.
+
+Create a IAM USER.
+--> this user is used to access AWS resources using CLI.
+--> attach admin policy.
+--> & also create ACCESS Key for CLI Access.
+
+
+purchase a Domain in GoDaddy
+
+Create a hosted public Zone is AWS Route53
+
+Then add the NS records in GoDaddy DNS profile (the namefield is same as which we have in AWS Route53)
+
+Login to AWS instance and install AWS CLI & setup the Access Keys
+
+Then install Kubectl from official documentation.
+
+Then install Kops from official documentation
+
+Run and check both Kops and Kubectl commands if they are working as expected or not.
+
+Now, It's time to create our cluster.
+
+-->kops create cluster --name=kubepratice.atchireddy.shop \
+						--state=s3://kopsconfigstore \
+						--zones=us-east-1a,us-east-1b \
+						--node-count=2 \
+						--node-size=t3.small \ 
+						--control-plane-size=t3.medium \
+						--dns-zone=kubepratice.atchireddy.shop \
+						--node-volume-size=12 \
+						--control-plane-volume-size=12 
+						
+--> kops update cluster --state=s3://kopsconfigstore --name=kubepratice.atchireddy.shop --yes --admin
+
+--> kops validate cluster --state=s3://kopsconfigstore --name=kubepratice.atchireddy.shop
+
+
+To delete our cluster we use
+--> kops delete cluster --state=s3://kopsconfigstore --name=kubepratice.atchireddy.shop --yes
